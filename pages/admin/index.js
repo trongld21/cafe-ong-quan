@@ -9,10 +9,9 @@ function Index() {
   }
   return (
     <>
-      <h1 className="text-3xl font-bold underline text-center">Hello admin!</h1>
+      <h1 className="text-3xl font-bold underline text-center">Trang quản lý tiệm cà phê Ông Quan</h1>
       <div className="w-10/12 flex flex-col p-4">
-        <Link href="/admin/category" className="py-4">Danh mục</Link>
-        <Link href="/admin/product">Sản phẩm</Link>
+        <Link href="/admin/thu-chi" className="p-4 border w-fit rounded-lg bg-green-500 text-white">Quản Lý Thu Chi</Link>
       </div>
     </>
   );

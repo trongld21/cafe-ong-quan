@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../../firebase";
 import Link from "next/link";
 import { format } from "date-fns";
 import ChiTietCa from "../../../components/ChiTietCa";
-import { formatDateTime } from "../../../constant";
+import { formatDateTime, formatVND } from "../../../constant";
 
 export default function QuanLyThuChi() {
   const [transactions, setTransactions] = useState([]);
@@ -34,10 +35,32 @@ export default function QuanLyThuChi() {
     setSelectedShift(shift);
   };
 
+  // Định nghĩa đối tượng lưu trữ thông tin doanh thu của từng ca
+  const shiftRevenues = {};
+
+  // Lặp qua các giao dịch để tính tổng doanh thu của từng ca
+  transactions.forEach((transaction) => {
+    const timestamp = new Date(transaction.timestamp).toISOString().split("T")[0];
+    if (!shiftRevenues[timestamp]) {
+      shiftRevenues[timestamp] = {};
+    }
+    if (!shiftRevenues[timestamp][transaction.shift]) {
+      shiftRevenues[timestamp][transaction.shift] = 0;
+    }
+    shiftRevenues[timestamp][transaction.shift] += transaction.revenue;
+  });
+
   return (
     <div className="p-16">
       <h1 className="text-xl font-semibold mb-4">Quản lý Thu Chi</h1>
-      <div className="mb-4">
+      <div className="mb-4 flex justify-start gap-4 flex-wrap">
+        <Link
+          href="/admin"
+          className="p-2 bg-green-400 rounded-md text-white"
+        >
+         Về trang chủ của admin
+        </Link>
+
         <Link
           href="/admin/thu-chi/nhap-thu-chi"
           className="p-2 bg-blue-400 rounded-md text-white"
@@ -61,20 +84,18 @@ export default function QuanLyThuChi() {
           </tr>
         </thead>
         <tbody>
-          {/* Lặp qua các ngày */}
-          {transactions.map((transaction) => (
-            <tr key={transaction.timestamp} className="border-b">
+          {Object.keys(shiftRevenues).map((timestamp) => (
+            <tr key={timestamp} className="border-b">
               <td className="py-2 px-4 text-center">
-                {formatDateTime(new Date(transaction.timestamp), "dd/MM/yyyy")}
+                {formatDateTime(new Date(timestamp), "dd/MM/yyyy")}
               </td>
-              {/* Lặp qua các ca */}
               {shifts.map((shift) => (
                 <td
                   key={shift}
                   className="py-2 px-4 cursor-pointer text-center"
-                  onClick={() => handleShiftClick(transaction.timestamp, shift)}
+                  onClick={() => handleShiftClick(timestamp, shift)}
                 >
-                  {shift}
+                  {formatVND(shiftRevenues[timestamp][shift] || 0)}
                 </td>
               ))}
             </tr>
