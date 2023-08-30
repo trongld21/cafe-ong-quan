@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../../firebase";
@@ -40,7 +39,9 @@ export default function QuanLyThuChi() {
 
   // Lặp qua các giao dịch để tính tổng doanh thu của từng ca
   transactions.forEach((transaction) => {
-    const timestamp = new Date(transaction.timestamp).toISOString().split("T")[0];
+    const timestamp = new Date(transaction.timestamp)
+      .toISOString()
+      .split("T")[0];
     if (!shiftRevenues[timestamp]) {
       shiftRevenues[timestamp] = {};
     }
@@ -50,15 +51,30 @@ export default function QuanLyThuChi() {
     shiftRevenues[timestamp][transaction.shift] += transaction.revenue;
   });
 
+  // Định nghĩa đối tượng lưu trữ thông tin tổng doanh thu, tổng chi và thực nhận theo ngày
+  const dailyInfo = {};
+
+  // Lặp qua các giao dịch để tính tổng doanh thu, tổng chi và thực nhận theo ngày
+  transactions.forEach((transaction) => {
+    const timestamp = new Date(transaction.timestamp)
+      .toISOString()
+      .split("T")[0];
+    if (!dailyInfo[timestamp]) {
+      dailyInfo[timestamp] = {
+        totalRevenue: 0,
+        totalExpenditure: 0,
+      };
+    }
+    dailyInfo[timestamp].totalRevenue += transaction.revenue;
+    dailyInfo[timestamp].totalExpenditure += transaction.expenditure;
+  });
+
   return (
     <div className="p-16">
       <h1 className="text-xl font-semibold mb-4">Quản lý Thu Chi</h1>
       <div className="mb-4 flex justify-start gap-4 flex-wrap">
-        <Link
-          href="/admin"
-          className="p-2 bg-green-400 rounded-md text-white"
-        >
-         Về trang chủ của admin
+        <Link href="/admin" className="p-2 bg-green-400 rounded-md text-white">
+          Về trang chủ của admin
         </Link>
 
         <Link
@@ -81,10 +97,13 @@ export default function QuanLyThuChi() {
                 {shift}
               </th>
             ))}
+            <th>Tổng Doanh Thu</th>
+            <th>Tổng Chi</th>
+            <th>Thực nhận</th>
           </tr>
         </thead>
         <tbody>
-          {Object.keys(shiftRevenues).map((timestamp) => (
+          {/* {Object.keys(shiftRevenues).map((timestamp) => (
             <tr key={timestamp} className="border-b">
               <td className="py-2 px-4 text-center">
                 {formatDateTime(new Date(timestamp), "dd/MM/yyyy")}
@@ -98,6 +117,32 @@ export default function QuanLyThuChi() {
                   {formatVND(shiftRevenues[timestamp][shift] || 0)}
                 </td>
               ))}
+             
+            </tr>
+          ))} */}
+
+          {Object.keys(dailyInfo).map((timestamp) => (
+            <tr key={timestamp} className="border-b">
+              <td className="py-2 px-4 text-center">
+                {formatDateTime(new Date(timestamp), "dd/MM/yyyy")}
+              </td>
+              {shifts.map((shift) => (
+                <td
+                  key={shift}
+                  className="py-2 px-4 cursor-pointer text-center"
+                  onClick={() => handleShiftClick(timestamp, shift)}
+                >
+                  {formatVND(shiftRevenues[timestamp]?.[shift] || 0)}
+                </td>
+              ))}
+              <td className="py-2 px-4 text-center">{formatVND(dailyInfo[timestamp]?.totalRevenue || 0)}</td>
+              <td className="py-2 px-4 text-center">{formatVND(dailyInfo[timestamp]?.totalExpenditure || 0)}</td>
+              <td className="py-2 px-4 text-center">
+                {formatVND(
+                  (dailyInfo[timestamp]?.totalRevenue || 0) -
+                    (dailyInfo[timestamp]?.totalExpenditure || 0)
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
