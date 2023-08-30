@@ -12,6 +12,10 @@ export default function NhapThuChi() {
   const [cashAmount, setCashAmount] = useState("");
   const [expenditure, setExpenditure] = useState("");
   const [expenditureContent, setExpenditureContent] = useState("");
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,7 +29,7 @@ export default function NhapThuChi() {
         cashAmount: parseFloat(cashAmount),
         expenditure: parseFloat(expenditure),
         expenditureContent,
-        timestamp: new Date().toISOString(),
+        timestamp: selectedDate,
       };
 
       const transactionsCollection = collection(firestore, "transactions");
@@ -49,10 +53,19 @@ export default function NhapThuChi() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center">
       <div className="bg-white rounded shadow-md w-96 p-8">
         <h2 className="text-xl font-semibold mb-4">Nhập Thu Chi</h2>
         <form onSubmit={handleSubmit} className="">
+          <div className="mb-4">
+            <label className="block font-medium">Ngày</label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
           <div className="mb-4">
             <label className="block font-medium">Ca</label>
             <select
@@ -132,12 +145,20 @@ export default function NhapThuChi() {
               />
             </div>
           )}
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-            type="submit"
-          >
-            Gửi
-          </button>
+          <div className="mb-4 flex justify-between items-center">
+            <Link
+              href="/admin/thu-chi"
+              className="text-red-600 border-b-2 border-red-600"
+            >
+              Quay lại
+            </Link>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              type="submit"
+            >
+              Gửi
+            </button>
+          </div>
         </form>
       </div>
     </div>
