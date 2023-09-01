@@ -24,8 +24,8 @@ a {
     color-scheme: dark;
   }
   body {
-    color: white;
-    background: black;
+    color: black;
+    background: white;
   }
 }
 
@@ -346,4 +346,8 @@ ol, li {
 .card_right .card_footer .btn:hover {
   color: #f37d3a;
   background: #fff;
+}
+
+:where(.css-dev-only-do-not-override-190m0jy).ant-layout .ant-layout-sider-children{
+  background: white;
 }
