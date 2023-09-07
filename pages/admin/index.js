@@ -9,10 +9,28 @@ function Index() {
   }
   return (
     <>
-      <h1 className="text-3xl font-bold underline text-center">Trang quản lý tiệm cà phê Ông Quan</h1>
-      <div className="w-10/12 flex flex-col p-4">
-        <Link href="/admin/thu-chi" className="p-4 border w-fit rounded-lg bg-green-500 text-white">Quản Lý Thu Chi</Link>
-      </div>
+      <h1 className="text-3xl font-bold underline text-center">
+        Trang quản lý tiệm cà phê Ông Quan
+      </h1>
+      {session?.user?.role === "Thu ngân" ? (
+        <div className="w-10/12 flex flex-col p-4">
+          <Link
+            href="/admin/nhap-thu-chi"
+            className="p-4 border w-fit rounded-lg bg-green-500 text-white"
+          >
+            Nhập Thu Chi
+          </Link>
+        </div>
+      ) : (
+        <div className="w-10/12 flex flex-col p-4">
+          <Link
+            href="/admin/thu-chi"
+            className="p-4 border w-fit rounded-lg bg-green-500 text-white"
+          >
+            Quản Lý Thu Chi
+          </Link>
+        </div>
+      )}
     </>
   );
 }

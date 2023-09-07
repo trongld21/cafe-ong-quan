@@ -28,7 +28,7 @@ export async function middleware(req) {
       const url = new URL(`/auth/sign-in`, req.url);
       return NextResponse.redirect(url);
     } else {
-      if (token.user.role === "Thu Ngân" || token.user.role === "Admin") {
+      if (token?.user?.role === "Thu ngân" || token?.user?.role === "Admin") {
       } else {
         const url = new URL(`/`, req.url);
         return NextResponse.redirect(url);

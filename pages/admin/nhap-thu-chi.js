@@ -87,6 +87,8 @@ export default function NhapThuChi() {
                 value={startAmount}
                 onChange={(e) => setStartAmount(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
+                step="1000"
+                required
               />
             </div>
             <div className="mb-4">
@@ -96,6 +98,8 @@ export default function NhapThuChi() {
                 value={endAmount}
                 onChange={(e) => setEndAmount(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
+                step="1000"
+                required
               />
             </div>
             <div className="mb-4">
@@ -105,6 +109,8 @@ export default function NhapThuChi() {
                 value={revenue}
                 onChange={(e) => setRevenue(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
+                step="1000"
+                required
               />
             </div>
             <div className="mb-4">
@@ -116,6 +122,8 @@ export default function NhapThuChi() {
                 value={transferAmount}
                 onChange={(e) => setTransferAmount(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
+                step="1000"
+                required
               />
             </div>
             <div className="mb-4">
@@ -125,6 +133,8 @@ export default function NhapThuChi() {
                 value={cashAmount}
                 onChange={(e) => setCashAmount(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
+                step="1000"
+                required
               />
             </div>
             <div className="mb-4">
@@ -134,6 +144,8 @@ export default function NhapThuChi() {
                 value={expenditure}
                 onChange={(e) => setExpenditure(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
+                step="1000"
+                required
               />
             </div>
             {expenditure && (
