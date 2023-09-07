@@ -338,6 +338,7 @@ function ThuChi() {
       <Modal
         title="Chi Tiết Thu Chi"
         open={isModalOpen}
+        okType='danger'
         onOk={handleOk}
         onCancel={handleCancel}
       >
