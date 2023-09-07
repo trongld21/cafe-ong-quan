@@ -1,3 +1,7 @@
+import * as Yup from 'yup';
+
+
+
 export const formatVND = (amount) => {
   const formatter = new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -19,11 +23,11 @@ export const formatDateTime = (timestamp) => {
   return new Intl.DateTimeFormat("vi-VN", options).format(new Date(timestamp));
 };
 
-export const columnsThuChi = ({handleClickDetail}) => [
+export const columnsThuChi = ({ handleClickDetail }) => [
   {
     title: "Ngày",
     dataIndex: "date",
-    render: text => <p onClick={() => handleClickDetail()}>{text}</p>
+    render: (text) => <p onClick={() => handleClickDetail()}>{text}</p>,
   },
   {
     title: "Ca 1",
@@ -50,3 +54,10 @@ export const columnsThuChi = ({handleClickDetail}) => [
     dataIndex: "actuallyReceived",
   },
 ];
+
+export const validateExpense = Yup.object().shape({
+  date: Yup.string().trim().required("Vui lòng nhập ngày"),
+  expense: Yup.string().trim().required("Vui lòng nhập số tiền"),
+  date: Yup.string().trim().required("Vui lòng nhập ngày"),
+  content: Yup.string().trim().required("Vui lòng nhập hình thức chi"),
+});

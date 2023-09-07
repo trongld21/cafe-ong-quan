@@ -7,13 +7,22 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
+import { useRouter } from "next/router";
 const { Header, Sider, Content } = Layout;
 
 function AdminLayout({ children }) {
+  const router = useRouter()
+  const [active, setActive] = useState(router.asPath.split('/')[2] || '');
+  console.log("🚀 ~ file: AdminLayout.js:16 ~ AdminLayout ~ active:", active)
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const handleItemClick = (name) => {
+    setActive(name);
+    router.push(`/admin/${name}`);
+};
   
   return (
     <Layout>
@@ -23,17 +32,19 @@ function AdminLayout({ children }) {
           theme="light"
           mode="inline"
           className="min-h-screen"
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={[active]}
           items={[
             {
-              key: "1",
+              key: "thu-chi",
               icon: <UserOutlined />,
               label: "Thu Chi",
+              onClick: () => handleItemClick('thu-chi')
             },
             {
-              key: "2",
+              key: "nhap-thu-chi",
               icon: <VideoCameraOutlined />,
-              label: "nav 2",
+              label: "Nhập Thu Chi",
+              onClick: () => handleItemClick('nhap-thu-chi')
             },
             {
               key: "3",
