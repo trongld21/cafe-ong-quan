@@ -15,42 +15,16 @@ const authOptions = {
       async authorize(credentials) {
         const { email, password } = credentials;
 
-        const admin = {
-          id: "21",
-          email: "trongld21@gmail.com",
-          password: "Default@123",
-        };
-        if (email !== admin.email || password !== admin.password) {
-          // Authenticate with Firebase Auth
-          const auth = getAuth();
-          try {
-            await signInWithEmailAndPassword(auth, email, password);
-          } catch (error) {
-            throw new Error("invalid credentials");
-          }
+        // Check Firebase Firestore for user state
+        const usersCollection = collection(firestore, "employees");
+        const querySnapshot = await getDocs(usersCollection);
+        const users = querySnapshot.docs.map((doc) => doc.data());
+        const user = users.find((user) => {
+          return user.username === email;
+        });
 
-          // Check Firebase Firestore for user state
-          const usersCollection = collection(firestore, "employees");
-          const querySnapshot = await getDocs(usersCollection);
-          const users = querySnapshot.docs.map((doc) => doc.data());
-          const user = users.find((user) => user.username === email);
-          if (!user || !user.state) {
-            throw new Error("user is not active");
-          }
-
-          return {
-            id: user?.id,
-            name: user?.fullName,
-            email: user?.username,
-            role: user?.role,
-          };
-        } else {
-          return {
-            id: "1234",
-            name: "trongld",
-            email: "trongld21@gmail.com",
-            role: "Admin"
-          };
+        if (user && user.password === password) {
+          return user;
         }
       },
     }),
@@ -59,6 +33,19 @@ const authOptions = {
   pages: {
     signIn: "/sign-in",
     signOut: "/",
+  },
+  callbacks: {
+    jwt: async ({ token, user }) => {
+      user && (token.user = user);
+      return token;
+    },
+    session: async ({ session, token }) => {
+      session.user = token.user;
+      return session;
+    },
+  },
+  session: {
+    strategy: "jwt",
   },
 };
 

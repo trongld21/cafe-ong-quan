@@ -8,12 +8,12 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react"
 const { Header, Sider, Content } = Layout;
 
 function AdminLayout({ children }) {
-  const router = useRouter()
-  const [active, setActive] = useState(router.asPath.split('/')[2] || '');
-  console.log("🚀 ~ file: AdminLayout.js:16 ~ AdminLayout ~ active:", active)
+  const router = useRouter();
+  const [active, setActive] = useState(router.asPath.split("/")[2] || "");
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
@@ -22,8 +22,8 @@ function AdminLayout({ children }) {
   const handleItemClick = (name) => {
     setActive(name);
     router.push(`/admin/${name}`);
-};
-  
+  };
+
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -38,24 +38,26 @@ function AdminLayout({ children }) {
               key: "thu-chi",
               icon: <UserOutlined />,
               label: "Thu Chi",
-              onClick: () => handleItemClick('thu-chi')
+              onClick: () => handleItemClick("thu-chi"),
             },
             {
               key: "nhap-thu-chi",
               icon: <VideoCameraOutlined />,
               label: "Nhập Thu Chi",
-              onClick: () => handleItemClick('nhap-thu-chi')
+              onClick: () => handleItemClick("nhap-thu-chi"),
             },
             {
-              key: "3",
+              key: "nhan-vien",
               icon: <UploadOutlined />,
-              label: "nav 3",
+              label: "Nhân Viên",
+              onClick: () => handleItemClick("nhan-vien"),
             },
           ]}
         />
       </Sider>
       <Layout>
         <Header
+          className="justify-between flex items-center"
           style={{
             padding: 0,
             background: colorBgContainer,
@@ -71,6 +73,7 @@ function AdminLayout({ children }) {
               height: 64,
             }}
           />
+          <Button className="mr-4" onClick={() => signOut()}>Đăng Xuất</Button>
         </Header>
         <Content
           style={{

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { firestore } from "../../../firebase"; // Đảm bảo đúng đường dẫn
 import Link from "next/link";
+import AdminLayout from "../../../components/Layout/AdminLayout";
 
 function EmployeeList() {
   const [employees, setEmployees] = useState([]);
@@ -35,7 +36,7 @@ function EmployeeList() {
   };
 
   return (
-    <div>
+    <AdminLayout>
       <h1 className="text-xl font-semibold mb-4">Danh sách nhân viên: </h1>
       <div className="mb-4">
         <Link
@@ -82,7 +83,7 @@ function EmployeeList() {
           ))}
         </tbody>
       </table>
-    </div>
+    </AdminLayout>
   );
 }
 

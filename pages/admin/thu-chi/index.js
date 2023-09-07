@@ -265,7 +265,7 @@ function ThuChi() {
             </Link> */}
             <Button onClick={() => setIsModalExpendOpen(true)}>Nhập Chi</Button>
             <Link
-              href="/admin/thu-chi/nhap-thu-chi"
+              href="/admin/nhap-thu-chi"
               className="p-2 bg-blue-400 rounded-md text-white"
             >
               Nhập thu chi
@@ -277,10 +277,6 @@ function ThuChi() {
           columns={columns}
           dataSource={!!dateRange ? dataTable : resultData}
           summary={(pageData) => {
-            console.log(
-              "🚀 ~ file: index.js:259 ~ ThuChi ~ pageData:",
-              pageData
-            );
             let revenue = 0;
             let expenditure = 0;
             let received = 0;
