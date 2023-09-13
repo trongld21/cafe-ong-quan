@@ -5,6 +5,7 @@ import {
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
+  LineChartOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useRouter } from "next/router";
@@ -39,6 +40,12 @@ function AdminLayout({ children }) {
               icon: <UserOutlined />,
               label: "Thu Chi",
               onClick: () => handleItemClick("thu-chi"),
+            },
+            {
+              key: "thu-chi-quan",
+              icon: <LineChartOutlined />,
+              label: "Thu Chi Quán",
+              onClick: () => handleItemClick("thu-chi-quan"),
             },
             {
               key: "nhap-thu-chi",

@@ -9,6 +9,7 @@ import { DatePicker } from "antd";
 const { RangePicker } = DatePicker;
 import { Typography } from "antd";
 import { Formik, Form, ErrorMessage } from "formik";
+import _ from "lodash";
 const { Text } = Typography;
 const { Option } = Select;
 
@@ -88,11 +89,30 @@ function ThuChi() {
       );
       const transactionList = querySnapshot.docs.map((doc) => doc.data());
       const expenseList = queryExpenseSnapshot.docs.map((doc) => doc.data());
+      const sortExpense = _.sortBy(expenseList, "timestamp");
+      const mergeExpense = _.groupBy(sortExpense, "timestamp");
+      const resultExpense = []
+      for (const timestamp in mergeExpense) {
+        if (mergeExpense.hasOwnProperty(timestamp)) {
+          const records = mergeExpense[timestamp];
+          const totalExpense = records.reduce(
+            (sum, record) => sum + record.expense,
+            0
+          );
+          const mergedRecord = {
+            type: records[0].type,
+            content: records.map((record) => record.content).join(", "),
+            expense: totalExpense,
+            timestamp: timestamp,
+          };
+          resultExpense.push(mergedRecord);
+        }
+      }
       transactionList.sort((a, b) => {
         return new Date(b.timestamp) - new Date(a.timestamp);
       });
       setTransactions(transactionList);
-      setExpense(expenseList);
+      setExpense(resultExpense);
     } catch (error) {
       console.error("Lỗi khi tải danh sách giao dịch:", error);
     }
@@ -338,7 +358,7 @@ function ThuChi() {
       <Modal
         title="Chi Tiết Thu Chi"
         open={isModalOpen}
-        okType='danger'
+        okType="danger"
         onOk={handleOk}
         onCancel={handleCancel}
       >

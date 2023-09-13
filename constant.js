@@ -1,6 +1,4 @@
-import * as Yup from 'yup';
-
-
+import * as Yup from "yup";
 
 export const formatVND = (amount) => {
   const formatter = new Intl.NumberFormat("vi-VN", {
@@ -61,3 +59,18 @@ export const validateExpense = Yup.object().shape({
   date: Yup.string().trim().required("Vui lòng nhập ngày"),
   content: Yup.string().trim().required("Vui lòng nhập hình thức chi"),
 });
+
+export const columnChiQuan = () => [
+  {
+    title: "Ngày",
+    dataIndex: "date",
+  },
+  {
+    title: "Số tiền chi",
+    dataIndex: "expense",
+  },
+  {
+    title: "Nội dung chi",
+    dataIndex: "content",
+  },
+];
