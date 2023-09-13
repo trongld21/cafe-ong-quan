@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  getDocs,
+  where,
+  limit,
+  updateDoc,
+  doc
+} from "firebase/firestore";
 import { firestore } from "../../firebase";
 import Link from "next/link";
 import AdminLayout from "../../components/Layout/AdminLayout";
@@ -34,7 +43,30 @@ export default function NhapThuChi() {
       };
 
       const transactionsCollection = collection(firestore, "transactions");
-      await addDoc(transactionsCollection, transactionData);
+      const queryTransaction = await getDocs(
+        query(
+          transactionsCollection,
+          where("timestamp", "==", selectedDate),
+          where("shift", "==", shift),
+          limit(1)
+        )
+      );
+      let dataTransaction = null;
+      if (queryTransaction.size > 0) {
+        const doc = queryTransaction.docs[0]; // Get the first (and only) document
+        dataTransaction = {
+          id: doc.id,
+          ...doc.data(),
+        };
+      }
+      if (dataTransaction) {
+        const updateRef = doc(firestore, "transactions", dataTransaction.id);
+        await updateDoc(updateRef, {
+          ...transactionData,
+        });
+      } else {
+        await addDoc(transactionsCollection, transactionData);
+      }
 
       // Reset form fields
       setShift("Ca 1");

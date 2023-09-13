@@ -1,8 +1,27 @@
-import { Button, Input, InputNumber, Modal, Select, Table } from "antd";
+import {
+  Button,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Table,
+  message,
+} from "antd";
 import { useEffect, useState } from "react";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import { firestore } from "../../../firebase";
-import { formatDateTime, formatVND, validateExpense } from "../../../constant";
+import {
+  formatDateTime,
+  formatVND,
+  validateExpense,
+  validateUpdateThuChi,
+} from "../../../constant";
 import AdminLayout from "../../../components/Layout/AdminLayout";
 import Link from "next/link";
 import { DatePicker } from "antd";
@@ -10,6 +29,7 @@ const { RangePicker } = DatePicker;
 import { Typography } from "antd";
 import { Formik, Form, ErrorMessage } from "formik";
 import _ from "lodash";
+import moment from "moment/moment";
 const { Text } = Typography;
 const { Option } = Select;
 
@@ -24,6 +44,8 @@ function ThuChi() {
   const [dateRange, setDateRange] = useState();
   const [resultData, setResultData] = useState();
   const [expenseDetail, setExpenseDetail] = useState();
+
+  const [messageApi, contextHolder] = message.useMessage();
 
   let transactionsTotal = [];
   // Function to calculator each element in array
@@ -87,11 +109,14 @@ function ThuChi() {
       const queryExpenseSnapshot = await getDocs(
         collection(firestore, "expense")
       );
-      const transactionList = querySnapshot.docs.map((doc) => doc.data());
+      const transactionList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       const expenseList = queryExpenseSnapshot.docs.map((doc) => doc.data());
       const sortExpense = _.sortBy(expenseList, "timestamp");
       const mergeExpense = _.groupBy(sortExpense, "timestamp");
-      const resultExpense = []
+      const resultExpense = [];
       for (const timestamp in mergeExpense) {
         if (mergeExpense.hasOwnProperty(timestamp)) {
           const records = mergeExpense[timestamp];
@@ -272,8 +297,23 @@ function ThuChi() {
     }
   };
 
+  const updateTransaction = async (values) => {
+    const updateRef = doc(firestore, "transactions", transactionsDetail?.id);
+    await updateDoc(updateRef, {
+      ...values,
+    }).then(() => {
+      setIsModalOpen(false);
+      messageApi.open({
+        type: "success",
+        content: "Cập nhật thu chi thành công",
+      });
+      fetchTransactions()
+    });
+  };
+
   return (
     <AdminLayout>
+      {contextHolder}
       <div className="flex flex-col gap-4">
         <div className="flex justify-between">
           <div className="flex gap-4">
@@ -358,32 +398,182 @@ function ThuChi() {
       <Modal
         title="Chi Tiết Thu Chi"
         open={isModalOpen}
-        okType="danger"
-        onOk={handleOk}
         onCancel={handleCancel}
+        destroyOnClose
+        footer={[
+          <button
+            form={transactionsDetail?.id}
+            className="border border-grey px-2.5 py-1 rounded-md hover:bg-grey"
+            key="submit"
+            htmltype="submit"
+            type="submit"
+          >
+            Cập nhật
+          </button>,
+        ]}
       >
-        <p>
-          Ca trực: <b>{transactionsDetail?.shift}</b>
-        </p>
-        <p>
-          Thời gian: <b>{transactionsDetail?.timestamp}</b>
-        </p>
-        <p>
-          Tiền mặt: <b>{formatVND(transactionsDetail?.cashAmount)}</b>
-        </p>
-        <p>
-          Tiền chuyển khoản:{" "}
-          <b>{formatVND(transactionsDetail?.transferAmount || 0)}</b>
-        </p>
-        <p>
-          Doanh thu: <b>{formatVND(transactionsDetail?.revenue || 0)}</b>
-        </p>
-        <p>
-          Tổng chi: <b>{formatVND(transactionsDetail?.expenditure || 0)}</b>
-        </p>
-        {!!transactionsDetail?.expenditure && (
-          <p>Nội dung chi: {transactionsDetail?.expenditureContent}</p>
-        )}
+        <Formik
+          initialValues={{
+            startAmount: transactionsDetail?.startAmount,
+            endAmount: transactionsDetail?.endAmount,
+            cashAmount: transactionsDetail?.cashAmount,
+            transferAmount: transactionsDetail?.transferAmount,
+            revenue: transactionsDetail?.revenue,
+            expenditure: transactionsDetail?.expenditure,
+            expenditureContent: transactionsDetail?.expenditureContent,
+          }}
+          validationSchema={validateUpdateThuChi}
+          onSubmit={(values) => {
+            return updateTransaction(values);
+            // return handleSubmitExpend(values);
+          }}
+        >
+          {({ setFieldValue }) => (
+            <Form id={transactionsDetail?.id}>
+              <div className="flex flex-col gap-4">
+                <section className="w-full flex gap-4 items-center">
+                  <p className="font-bold w-5/12">Thời gian</p>
+                  <div className="flex flex-col gap-1 w-full">
+                    <DatePicker
+                      defaultValue={moment(
+                        transactionsDetail?.timestamp,
+                        "YYYY-MM-DD"
+                      )}
+                      disabled
+                      className="w-full disabled"
+                    />
+                  </div>
+                </section>
+                <section className="w-full flex gap-4 items-center">
+                  <p className="font-bold w-5/12">Ca trực</p>
+                  <div className="flex flex-col gap-1 w-full">
+                    <Input defaultValue={transactionsDetail?.shift} disabled />
+                  </div>
+                </section>
+                <section className="w-full flex gap-4 items-center">
+                  <p className="font-bold w-5/12">Số tiền đầu ca</p>
+                  <div className="flex flex-col gap-1 w-full">
+                    <InputNumber
+                      className="w-full"
+                      defaultValue={transactionsDetail?.startAmount}
+                      onChange={(values) => {
+                        setFieldValue("startAmount", values);
+                      }}
+                    />
+                    <ErrorMessage
+                      name="startAmount"
+                      component="p"
+                      className="text-error text-xs"
+                    />
+                  </div>
+                </section>
+                <section className="w-full flex gap-4 items-center">
+                  <p className="font-bold w-5/12">Số tiền cuối ca</p>
+                  <div className="flex flex-col gap-1 w-full">
+                    <InputNumber
+                      className="w-full"
+                      defaultValue={transactionsDetail?.endAmount}
+                      onChange={(values) => {
+                        setFieldValue("endAmount", values);
+                      }}
+                    />
+                    <ErrorMessage
+                      name="endAmount"
+                      component="p"
+                      className="text-error text-xs"
+                    />
+                  </div>
+                </section>
+                <section className="w-full flex gap-4 items-center">
+                  <p className="font-bold w-5/12">Doanh thu trên máy</p>
+                  <div className="flex flex-col gap-1 w-full">
+                    <InputNumber
+                      className="w-full"
+                      defaultValue={transactionsDetail?.revenue}
+                      onChange={(values) => {
+                        setFieldValue("revenue", values);
+                      }}
+                    />
+                    <ErrorMessage
+                      name="revenue"
+                      component="p"
+                      className="text-error text-xs"
+                    />
+                  </div>
+                </section>
+                <section className="w-full flex gap-4 items-center">
+                  <p className="font-bold w-5/12">Tiền chuyển khoản</p>
+                  <div className="flex flex-col gap-1 w-full">
+                    <InputNumber
+                      className="w-full"
+                      defaultValue={transactionsDetail?.transferAmount}
+                      onChange={(values) => {
+                        setFieldValue("transferAmount", values);
+                      }}
+                    />
+                    <ErrorMessage
+                      name="transferAmount"
+                      component="p"
+                      className="text-error text-xs"
+                    />
+                  </div>
+                </section>
+                <section className="w-full flex gap-4 items-center">
+                  <p className="font-bold w-5/12">Số tiền trong két</p>
+                  <div className="flex flex-col gap-1 w-full">
+                    <InputNumber
+                      className="w-full"
+                      defaultValue={transactionsDetail?.cashAmount}
+                      onChange={(values) => {
+                        setFieldValue("cashAmount", values);
+                      }}
+                    />
+                    <ErrorMessage
+                      name="cashAmount"
+                      component="p"
+                      className="text-error text-xs"
+                    />
+                  </div>
+                </section>
+
+                <section className="w-full flex gap-4 items-center">
+                  <p className="font-bold w-5/12">Số tiền đã chi</p>
+                  <div className="flex flex-col gap-1 w-full">
+                    <InputNumber
+                      className="w-full"
+                      defaultValue={transactionsDetail?.expenditure}
+                      onChange={(values) => {
+                        setFieldValue("expenditure", values);
+                      }}
+                    />
+                    <ErrorMessage
+                      name="expenditure"
+                      component="p"
+                      className="text-error text-xs"
+                    />
+                  </div>
+                </section>
+                <section className="w-full flex gap-4 items-center">
+                  <p className="font-bold w-5/12">Nội dung đã chi</p>
+                  <div className="flex flex-col gap-1 w-full">
+                    <Input.TextArea
+                      allowClear
+                      defaultValue={transactionsDetail?.expenditureContent}
+                      onChange={(event) => {
+                        setFieldValue("expenditureContent", event.target.value);
+                      }}
+                    />
+                    <ErrorMessage
+                      name="expenditureContent"
+                      component="p"
+                      className="text-error text-xs"
+                    />
+                  </div>
+                </section>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       <Modal
         title="Chi Tiết Quán Chi"

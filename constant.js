@@ -60,17 +60,11 @@ export const validateExpense = Yup.object().shape({
   content: Yup.string().trim().required("Vui lòng nhập hình thức chi"),
 });
 
-export const columnChiQuan = () => [
-  {
-    title: "Ngày",
-    dataIndex: "date",
-  },
-  {
-    title: "Số tiền chi",
-    dataIndex: "expense",
-  },
-  {
-    title: "Nội dung chi",
-    dataIndex: "content",
-  },
-];
+export const validateUpdateThuChi = Yup.object().shape({
+  startAmount: Yup.string().trim().required("Vui lòng nhập số tiền"),
+  endAmount: Yup.string().trim().required("Vui lòng nhập số tiền"),
+  cashAmount: Yup.string().trim().required("Vui lòng nhập số tiền"),
+  transferAmount: Yup.string().trim().required("Vui lòng nhập số tiền"),
+  revenue: Yup.string().trim().required("Vui lòng nhập số tiền"),
+  expenditure: Yup.string().trim().required("Vui lòng nhập số tiền"),
+});
