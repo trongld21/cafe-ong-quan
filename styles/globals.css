@@ -351,3 +351,14 @@ ol, li {
 :where(.css-dev-only-do-not-override-190m0jy).ant-layout .ant-layout-sider-children{
   background: white;
 }
+
+.ant-table-thead {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: white;
+}
+
+.ant-table-thead tr .ant-table-cell {
+  background: rgb(129, 173, 255) !important;
+}
