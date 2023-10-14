@@ -1,9 +1,10 @@
 import { Table, Tooltip } from "antd";
-import AdminLayout from "../../components/Layout/AdminLayout";
+import AdminLayout from "../../../components/Layout/AdminLayout";
 import { collection, getDocs, addDoc } from "firebase/firestore";
-import { firestore } from "../../firebase";
+import { firestore } from "../../../firebase";
 import { useEffect, useState } from "react";
-import { formatDateTime, formatVND } from "../../constant";
+import { formatDateTime, formatVND } from "../../../constant";
+import Link from "next/link";
 
 const column = [
   {
@@ -52,7 +53,15 @@ function ThuChiQuan() {
 
   return (
     <AdminLayout>
-      <Table columns={column} dataSource={data} size="middle" />
+      <div class="py-4">
+        <Link
+          href="/admin/thu-chi-quan/nhap"
+          className="p-2 bg-green-600 rounded-md text-white hover:text-white"
+        >
+          Nhập chi
+        </Link>
+      </div>
+      <Table columns={column} dataSource={data} size="middle"/>
     </AdminLayout>
   );
 }
