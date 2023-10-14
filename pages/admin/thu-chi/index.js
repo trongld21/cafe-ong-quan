@@ -307,7 +307,7 @@ function ThuChi() {
         type: "success",
         content: "Cập nhật thu chi thành công",
       });
-      fetchTransactions()
+      fetchTransactions();
     });
   };
 
@@ -336,6 +336,7 @@ function ThuChi() {
         <Table
           columns={columns}
           dataSource={!!dateRange ? dataTable : resultData}
+          pagination={{ pageSize: 31 }}
           summary={(pageData) => {
             let revenue = 0;
             let expenditure = 0;
