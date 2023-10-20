@@ -41,11 +41,44 @@ function ThuChi() {
   const [expense, setExpense] = useState([]);
   const [dataTable, setDataTable] = useState();
   const [transactionsDetail, setTransactionsDetail] = useState();
-  const [dateRange, setDateRange] = useState();
   const [resultData, setResultData] = useState();
   const [expenseDetail, setExpenseDetail] = useState();
+  const [sortDateSelected, setSortDateSelected] = useState({
+    month: (moment().month() + 1).toString().padStart(2, "0"),
+    year: moment().year(),
+  });
 
   const [messageApi, contextHolder] = message.useMessage();
+
+  const handleChangeSortMonth = (value) => {
+    setSortDateSelected({
+      ...sortDateSelected,
+      month: value,
+    });
+  };
+
+  const optionsMonth = [];
+  for (let i = 1; i <= 12; i++) {
+    optionsMonth.push({
+      value: i.toString().padStart(2, "0"),
+      label: "Tháng " + i,
+    });
+  }
+
+  const optionsYear = [
+    {
+      value: moment().year() - 1,
+      label: "Năm " + (moment().year() - 1),
+    },
+    {
+      value: moment().year(),
+      label: "Năm " + moment().year(),
+    },
+    {
+      value: moment().year() + 1,
+      label: "Năm " + (moment().year() + 1),
+    },
+  ];
 
   let transactionsTotal = [];
   // Function to calculator each element in array
@@ -90,14 +123,6 @@ function ThuChi() {
   };
   const handleCancel = () => {
     setIsModalOpen(false);
-  };
-
-  const handleDateChange = (date, dateString) => {
-    if (date === null) {
-      setDateRange(null);
-    } else {
-      setDateRange(dateString);
-    }
   };
 
   // Fetch data from firebase
@@ -234,19 +259,18 @@ function ThuChi() {
   ];
 
   useEffect(() => {
-    if (resultData && dateRange) {
+    if (resultData && sortDateSelected) {
       setDataTable(
         resultData.filter((item) => {
-          const itemDate = new Date(item?.date);
+          const [year, month] = item?.date.split("-");
           return (
-            itemDate >= new Date(dateRange[0]) &&
-            itemDate <= new Date(dateRange[1])
+            year == sortDateSelected.year && month == sortDateSelected.month
           );
         })
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange]);
+  }, [sortDateSelected, resultData]);
 
   useEffect(() => {
     if (dataResult && expense) {
@@ -331,11 +355,33 @@ function ThuChi() {
               Nhập thu chi
             </Link>
           </div>
-          <RangePicker onChange={handleDateChange} />
+          {/* <RangePicker onChange={handleDateChange} /> */}
+          <div className="flex gap-2">
+            <Select
+              // size={size}
+              defaultValue={(moment().month() + 1).toString().padStart(2, "0")}
+              onChange={handleChangeSortMonth}
+              style={{
+                width: 100,
+              }}
+              options={optionsMonth}
+            />
+            <Select
+              // size={size}
+              defaultValue={moment().year()}
+              onChange={(value) =>
+                setSortDateSelected({ ...sortDateSelected, year: value })
+              }
+              style={{
+                width: 150,
+              }}
+              options={optionsYear}
+            />
+          </div>
         </div>
         <Table
           columns={columns}
-          dataSource={!!dateRange ? dataTable : resultData}
+          dataSource={!!sortDateSelected ? dataTable : resultData}
           pagination={{ pageSize: 31 }}
           summary={(pageData) => {
             let revenue = 0;
