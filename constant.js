@@ -68,3 +68,7 @@ export const validateUpdateThuChi = Yup.object().shape({
   revenue: Yup.string().trim().required("Vui lòng nhập số tiền"),
   expenditure: Yup.string().trim().required("Vui lòng nhập số tiền"),
 });
+
+export const validateCreateMaterial = Yup.object().shape({
+  materialName: Yup.string().trim().required("Vui lòng nhập tên đơn vị"),
+});
