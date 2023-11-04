@@ -29,7 +29,6 @@ a {
   }
 }
 
-
 @keyframes tonext {
   75% {
     left: 0;
@@ -98,7 +97,8 @@ a {
   -ms-overflow-style: none;
 }
 
-ol, li {
+ol,
+li {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -231,7 +231,7 @@ ol, li {
 
 .carousel::before,
 .carousel::after {
-  content: '';
+  content: "";
   z-index: 1;
   background-color: #333;
   background-size: 1.5rem 1.5rem;
@@ -253,7 +253,7 @@ ol, li {
 }
 
 .custom-section-hotline {
-  background-image: url('/assets/images/loop_img.jpeg');
+  background-image: url("/assets/images/loop_img.jpeg");
 }
 
 .card_left {
@@ -327,7 +327,7 @@ ol, li {
   margin-top: 25px;
 }
 .card_right .card_footer .price {
-  color: rgba(38, 38, 38, .59);
+  color: rgba(38, 38, 38, 0.59);
   letter-spacing: 1px;
   font-size: 1.25rem;
 }
@@ -348,7 +348,8 @@ ol, li {
   background: #fff;
 }
 
-:where(.css-dev-only-do-not-override-190m0jy).ant-layout .ant-layout-sider-children{
+:where(.css-dev-only-do-not-override-190m0jy).ant-layout
+  .ant-layout-sider-children {
   background: white;
 }
 
@@ -361,4 +362,86 @@ ol, li {
 
 .ant-table-thead tr .ant-table-cell {
   background: rgb(129, 173, 255) !important;
+}
+
+/* Custom */
+.main-section {
+  background: url("../public/assets/images/home/bg-home.png") no-repeat center
+    center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  position: relative;
+}
+
+.swiper-button-prev, .swiper-button-next {
+  color: #594633 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #594633 !important;
+}
+
+@font-face {
+  font-family: "iCielBCCartelDeuxAlt";
+  src: url("../public/assets/fonts/iCielBCCartelDeux-Alt.woff") format("woff");
+}
+
+.font-iCielBCCartelDeuxAlt {
+  font-family: iCielBCCartelDeuxAlt, serif; 
+}
+
+@font-face {
+  font-family: "iCielBCHolidaySerif";
+  src: url("../public/assets/fonts/iCielBCHolidaySerif-Regular.woff") format("woff");
+}
+
+.font-iCielBCHolidaySerif {
+  font-family: iCielBCHolidaySerif, serif; 
+}
+
+@font-face {
+  font-family: "iCielBCLeJeunePoster";
+  src: url("../public/assets/fonts/iCielBCLeJeunePoster-Light.woff") format("woff");
+}
+
+.font-iCielBCLeJeunePoster {
+  font-family: iCielBCLeJeunePoster, serif; 
+}
+
+@font-face {
+  font-family: "iCielBCLivory";
+  src: url("../public/assets/fonts/iCielBCLivory-Regular.woff") format("woff");
+}
+
+.font-iCielBCLivory {
+  font-family: iCielBCLivory, serif; 
+}
+
+@font-face {
+  font-family: "iCielBCBjola";
+  src: url("../public/assets/fonts/iCielBCBjola-Black.woff") format("woff");
+}
+
+.font-iCielBCBjola {
+  font-family: iCielBCBjola, serif; 
+}
+
+@font-face {
+  font-family: "iCielBCDowntown";
+  src: url("../public/assets/fonts/iCielBCDowntown-Regular.woff") format("woff");
+}
+
+.font-iCielBCDowntown {
+  font-family: iCielBCDowntown, serif; 
+}
+
+@font-face {
+  font-family: "iCielBCQuotesCaps";
+  src: url("../public/assets/fonts/iCielBCQuotesCaps-Regular.woff") format("woff");
+}
+
+.font-iCielBCQuotesCaps {
+  font-family: iCielBCQuotesCaps, serif; 
 }
