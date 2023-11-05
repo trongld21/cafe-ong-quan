@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(req) {
   const pathname = req.nextUrl.pathname;
   const protectedPaths = ["/admin", "/admin/nhap-thu-chi"];
-  const adminPaths = ["/admin/thu-chi", "/admin/nhan-vien", 'admin/nhan-vien/tao-tai-khoan'];
+  const adminPaths = ["/admin/thu-chi", "/admin/nhan-vien", 'admin/nhan-vien/tao-tai-khoan', '/admin/thu-chi-quan'];
   const isPathProtected = protectedPaths?.some((path) => pathname == path);
   const isAdminPath = adminPaths?.some((path) => pathname == path);
   const res = NextResponse.next();
