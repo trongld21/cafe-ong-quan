@@ -5,7 +5,9 @@ import {
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
-  LineChartOutlined
+  LineChartOutlined,
+  ShoppingCartOutlined,
+  CoffeeOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { useRouter } from "next/router";
@@ -58,6 +60,18 @@ function AdminLayout({ children }) {
               icon: <UploadOutlined />,
               label: "Nhân Viên",
               onClick: () => handleItemClick("nhan-vien"),
+            },
+            {
+              key: "ingredient",
+              icon: <CoffeeOutlined />,
+              label: "Nguyên liệu",
+              onClick: () => handleItemClick("ingredient"),
+            },
+            {
+              key: "ingredient/history",
+              icon: <ShoppingCartOutlined />,
+              label: "Quản lý kho",
+              onClick: () => handleItemClick("ingredient/history"),
             },
           ]}
         />

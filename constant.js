@@ -72,3 +72,18 @@ export const validateUpdateThuChi = Yup.object().shape({
 export const validateCreateMaterial = Yup.object().shape({
   materialName: Yup.string().trim().required("Vui lòng nhập tên đơn vị"),
 });
+
+export const validateCreateWareHouse = Yup.object().shape({
+  date: Yup.string().trim().required("Vui lòng nhập ngày"),
+  staffName: Yup.string().trim().required("Vui lòng nhập tên"),
+  ingredientName: Yup.string().required('Tên sản phẩm không được để trống'),
+  quantity: Yup.number().required('Số lượng không được để trống').positive('Số lượng phải là số dương'),
+  note: Yup.string(),
+});
+
+export const validateCreateIngredient = Yup.object().shape({
+  ingredientName: Yup.string().required('Tên sản phẩm không được để trống'),
+  materialName: Yup.string().required('Vui lòng chọn đơn vị'),
+  originalQuantity: Yup.number().required('Số lượng không được để trống').positive('Số lượng phải là số dương'),
+  limitQuantity: Yup.number().required('Số lượng không được để trống').positive('Số lượng phải là số dương'),
+});
